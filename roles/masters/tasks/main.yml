@@ -1,0 +1,18 @@
+---
+- name: Copy HA Proxy Config.
+  template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+    mode: 777
+
+- name: Copy Check API Server Script.
+  template:
+    src: check_apiserver.sh.j2
+    dest: /etc/keepalived/check_apiserver.sh
+    mode: 777
+
+- name: Copy Keepalived Config.
+  template:
+    src: keepalived.conf.j2
+    dest: /etc/keepalived/keepalived.conf
+    mode: 777

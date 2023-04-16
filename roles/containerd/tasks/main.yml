@@ -1,0 +1,104 @@
+---
+- name: Install packages that allow apt to be used over HTTPS
+  apt:
+    state: present
+    update_cache: yes
+    pkg:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - software-properties-common
+
+- name: Load overlay and br_netfilter module
+  modprobe:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - overlay
+    - br_netfilter
+
+- name: Setup sysctl parameters
+  sysctl:
+    name: "{{ item }}"
+    value: "1"
+    reload: true
+  loop:
+    - net.ipv4.ip_forward
+    - net.bridge.bridge-nf-call-iptables
+    - net.bridge.bridge-nf-call-ip6tables
+
+- name: Add an apt signing key for Docker
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add apt repository for stable version
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu jammy stable
+    state: present
+
+- name: Install Containerd
+  package:
+    name: "{{ containerd_package }}"
+    state: "{{ containerd_package_state }}"
+
+- name: Ensure containerd is started and enabled at boot.
+  service:
+    name: containerd
+    state: "{{ containerd_service_state }}"
+    enabled: "{{ containerd_service_enabled }}"
+
+- name: Ensure containerd config directory exists.
+  file:
+    path: /etc/containerd
+    state: directory
+  register: containerd_dir
+
+- name: Get defaults from containerd.
+  command: containerd config default
+  changed_when: false
+  register: containerd_config_default
+  when: containerd_config_default_write
+
+- name: Prepare containerd/config.toml from default config
+  copy:
+    dest: /tmp/containerd_config.toml
+    content: "{{ containerd_config_default.stdout }}"
+  when: containerd_config_default_write
+  changed_when: false
+
+- name: Set Cgroup driver to systemd
+  lineinfile:
+    insertafter: '.*\[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options\]$'
+    line: "          SystemdCgroup = true"
+    state: present
+    path: /tmp/containerd_config.toml
+  when: containerd_config_default_write and containerd_config_cgroup_driver_systemd
+  changed_when: false
+
+- name: Make sure  SystemdCgroup = false is not set
+  lineinfile:
+    path: /tmp/containerd_config.toml
+    state: absent
+    line: "            SystemdCgroup = false"
+  notify: restart containerd
+  when: containerd_config_default_write and containerd_config_cgroup_driver_systemd
+  changed_when: false
+
+- name: Copy config.toml to /etc/containerd
+  copy:
+    remote_src: true
+    src: /tmp/containerd_config.toml
+    dest: /etc/containerd/config.toml
+  notify: restart containerd
+  when: containerd_config_default_write
+
+- name: Cleanup temporary file
+  file:
+    path: /tmp/containerd_config.toml
+    state: absent
+  changed_when: false
+
+- name: Ensure containerd is restarted immediately if necessary.
+  meta: flush_handlers

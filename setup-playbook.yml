@@ -1,0 +1,28 @@
+---
+- hosts: all
+  gather_facts: true
+  become: yes
+  roles:
+    - { role: containerd }
+    - { role: kubernetes }
+# - hosts: master_main
+#   gather_facts: true
+#   become: yes
+#   vars:
+#     is_main_master: true
+#   roles:
+#     - { role: masters }
+
+# - hosts: master_backup
+#   gather_facts: true
+#   become: yes
+#   vars:
+#     is_main_master: false
+#   roles:
+#     - { role: masters }
+
+# - hosts: workers
+#   gather_facts: true
+#   become: yes
+#   roles:
+#     - { role: workers }

@@ -1,0 +1,15 @@
+---
+- name: Install required packages.
+  apt:
+    state: present
+    update_cache: yes
+    pkg:
+      - jq
+      - cifs-utils
+      - nfs-common
+
+- name: Get CIFS plugin.
+  get_url:
+    url: https://raw.githubusercontent.com/fstab/cifs/master/cifs
+    mode: 755
+    dest: /usr/libexec/kubernetes/kubelet-plugins/volume/exec/cifs

@@ -1,3 +1,3 @@
 # HA-k8s with Ansible 
 
-This project aims to create a set of playbooks to spin up a high-availability k8s cluster with ansible.
+This project aims to create a set of playbooks to spin up a high-availability k8s cluster with ansible. Other kubernetes manifests are also provided for auxiliary tasks such as metallb. There are four main roles. The containerd and kubernetes roles gets all nodes ready with the aformentioned packages. The masters role sets-up the master nodes in a high-availablity configuration (one node is the main master, others are backups). Finally there is a playbook for the basic worker nodes. The main things you are reqired to do is to change the IP addresses of everything and have a set of ubuntu 22.04 targets with SSH access.
