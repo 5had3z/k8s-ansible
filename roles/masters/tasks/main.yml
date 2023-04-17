@@ -1,26 +1,28 @@
 ---
-- name: Create Directories for HA Configs.
+- name: Create Directories for HA Configs and Manifests.
   file:
     path: "{{ item }}"
     state: directory
   loop:
     - /etc/haproxy
     - /etc/keepalived
+    - /etc/kubernetes/manifests
 
-- name: Copy HA Proxy Config.
+- name: Copy HAProxy and KeepAliveD Config Templates.
   template:
-    src: haproxy.cfg.j2
-    dest: /etc/haproxy/haproxy.cfg
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
     mode: 777
+  loop:
+    - { src: haproxy.cfg.j2, dest: /etc/haproxy/haproxy.cfg }
+    - { src: check_apiserver.sh.j2, dest: /etc/keepalived/check_apiserver.sh }
+    - { src: keepalived.conf.j2, dest: /etc/keepalived/keepalived.conf }
 
-- name: Copy Check API Server Script.
-  template:
-    src: check_apiserver.sh.j2
-    dest: /etc/keepalived/check_apiserver.sh
+- name: Copy HAProxy and KeepAliveD Manifests.
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/kubernetes/manifests/{{ item }}"
     mode: 777
-
-- name: Copy Keepalived Config.
-  template:
-    src: keepalived.conf.j2
-    dest: /etc/keepalived/keepalived.conf
-    mode: 777
+  loop:
+    - haproxy.yaml
+    - keepalived.yaml
