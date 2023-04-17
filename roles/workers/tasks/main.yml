@@ -8,8 +8,13 @@
       - cifs-utils
       - nfs-common
 
+- name: Create Plugin Directory
+  file:
+    path: "{{ cifs_plugin_dir }}"
+    state: directory
+
 - name: Get CIFS plugin.
   get_url:
     url: https://raw.githubusercontent.com/fstab/cifs/master/cifs
     mode: 755
-    dest: /usr/libexec/kubernetes/kubelet-plugins/volume/exec/cifs
+    dest: "{{ cifs_plugin_dir }}/cifs"
