@@ -12,13 +12,13 @@ vrrp_script check_apiserver {
 }
 
 vrrp_instance VI_1 {
-    {% if is_master %}
-        state MASTER
-        priority 101
-    {% else %}
-        state BACKUP
-        priority 100
-    {% endif %}
+    {% if 'master_main' in group_names -%}
+    state MASTER
+    priority 101
+    {% else -%}
+    state BACKUP
+    priority 100
+    {% endif -%}
     interface {{ ansible_default_ipv4.alias }}
     virtual_router_id 51
     authentication {

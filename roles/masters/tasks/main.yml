@@ -1,4 +1,12 @@
 ---
+- name: Create Directories for HA Configs.
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - /etc/haproxy
+    - /etc/keepalived
+
 - name: Copy HA Proxy Config.
   template:
     src: haproxy.cfg.j2
