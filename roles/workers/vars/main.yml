@@ -1,2 +1,2 @@
 ---
-cifs_plugin_dir: /usr/libexec/kubernetes/kubelet-plugins/volume/exec
+cifs_plugin_dir: /usr/libexec/kubernetes/kubelet-plugins/volume/exec/fstab~cifs
