@@ -16,5 +16,5 @@
 - name: Get CIFS plugin.
   get_url:
     url: https://raw.githubusercontent.com/fstab/cifs/master/cifs
-    mode: 755
+    mode: 0755
     dest: "{{ cifs_plugin_dir }}/cifs"

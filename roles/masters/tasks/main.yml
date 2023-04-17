@@ -12,7 +12,7 @@
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
-    mode: 777
+    mode: 0755
   loop:
     - { src: haproxy.cfg.j2, dest: /etc/haproxy/haproxy.cfg }
     - { src: check_apiserver.sh.j2, dest: /etc/keepalived/check_apiserver.sh }
@@ -22,7 +22,7 @@
   copy:
     src: "{{ item }}"
     dest: "/etc/kubernetes/manifests/{{ item }}"
-    mode: 777
+    mode: 0755
   loop:
     - haproxy.yaml
     - keepalived.yaml
