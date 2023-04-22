@@ -102,3 +102,9 @@
 
 - name: Ensure containerd is restarted immediately if necessary.
   meta: flush_handlers
+
+- name: Setup crictl config defaults.
+  copy:
+    src: crictl.yaml
+    dest: /etc/crictl.yaml
+    mode: 0755

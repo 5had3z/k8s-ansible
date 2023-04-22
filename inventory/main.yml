@@ -2,13 +2,14 @@ all:
   vars:
     ansible_ssh_user: bpfer
   children:
-    master_main:
+    control_plane:
       hosts:
         192.168.1.10:
-    master_backup:
-      hosts:
+          control_master: True
         192.168.1.11:
+          control_master: False
         192.168.1.12:
+          control_master: False
     workers:
       hosts:
         192.168.1.20:

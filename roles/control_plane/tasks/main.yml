@@ -12,7 +12,7 @@
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
-    mode: 0755
+    mode: 0644
   loop:
     - { src: haproxy.cfg.j2, dest: /etc/haproxy/haproxy.cfg }
     - { src: check_apiserver.sh.j2, dest: /etc/keepalived/check_apiserver.sh }
@@ -22,7 +22,16 @@
   copy:
     src: "{{ item }}"
     dest: "/etc/kubernetes/manifests/{{ item }}"
-    mode: 0755
+    mode: 0644
   loop:
     - haproxy.yaml
     - keepalived.yaml
+
+- name: Setup main control node.
+  include_tasks: control_main.yml
+  when: control_master == True
+
+- name: Setup Backup Control Plane Nodes.
+  shell: >
+    "{{ backup_join_command | trim }}"
+  when: control_master == False

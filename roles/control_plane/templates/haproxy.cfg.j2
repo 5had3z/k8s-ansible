@@ -46,7 +46,7 @@ backend apiserver
     mode tcp
     option ssl-hello-chk
     balance     roundrobin
-        {% for host in groups['master_main'] | union(groups['master_backup']) -%}
+        {% for host in groups['control_plane'] -%}
         {% set info = hostvars[host].ansible_facts -%}
         server {{ info.hostname }} {{ info.default_ipv4.address }}:6443 check 
         {% endfor -%}

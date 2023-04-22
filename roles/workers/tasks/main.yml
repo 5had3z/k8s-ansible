@@ -18,3 +18,7 @@
     url: https://raw.githubusercontent.com/fstab/cifs/master/cifs
     mode: 0755
     dest: "{{ cifs_plugin_dir }}/cifs"
+
+- name: Join Cluster.
+  shell: >
+    "{{ worker_join_command | trim }}"

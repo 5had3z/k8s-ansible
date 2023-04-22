@@ -12,7 +12,7 @@ vrrp_script check_apiserver {
 }
 
 vrrp_instance VI_1 {
-    {% if 'master_main' in group_names -%}
+    {% if control_master == True -%}
     state MASTER
     priority 101
     {% else -%}
