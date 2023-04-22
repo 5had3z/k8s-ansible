@@ -1,3 +1,4 @@
 ---
 backup_join_re: kubeadm join .*\n.*--discovery-token[A-Za-z-]+ sha256:[A-Za-z0-9]{64}.+\n.+--control-plane --certificate-key [A-Za-z0-9]{64}
 worker_join_re: kubeadm join .*\n.*--discovery-token[A-Za-z-]+ sha256:[A-Za-z0-9]{64}
+pod_cidr: 172.18.0.0/16

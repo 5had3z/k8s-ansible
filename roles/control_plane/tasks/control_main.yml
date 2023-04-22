@@ -1,6 +1,6 @@
 ---
 - name: Initialize Kubernetes control plane with kubeadm init
-  command: "kubeadm init --pod-network-cidr 172.18.0.0/16 --control-plane-endpoint {{ k8s_api_address }}:8443 --upload-certs"
+  command: "kubeadm init --pod-network-cidr {{ pod_cidr }} --control-plane-endpoint {{ k8s_api_address }}:8443 --upload-certs"
   register: kubeadmin_init
 
 - name: Print the init output to screen.
@@ -55,7 +55,7 @@
   delay: 5
 
 - name: Copy Calico configuration.
-  copy:
+  template:
     src: calico.yml
     dest: /root/calico.yml
     mode: 0644
